@@ -5,6 +5,7 @@ import {
   insert,
   toggle,
   remove,
+  update,
   changeInfoInput,
 } from "../../redux/modules/inputvalue";
 import styled from "styled-components";
@@ -13,7 +14,8 @@ import InputForm from "../inputform/InputForm";
 const ToDoContainer = styled.div`
   width: 100%;
   height: 100%;
-  border: 1px solid black;
+  max-width: 1200px;
+  min-width: 800px;
 `;
 
 function ToDo() {
@@ -35,27 +37,29 @@ function ToDo() {
     (title, info) => dispatch(insert(title, info)),
     [dispatch]
   );
+  const onUpdate = useCallback(
+    (id, content) => dispatch(update(id, content)),
+    [dispatch]
+  );
+  console.log(onUpdate);
   const onToggle = useCallback((id) => dispatch(toggle(id)), [dispatch]);
   const onRemove = useCallback((id) => dispatch(remove(id)), [dispatch]);
   return (
-    console.log(title),
-    console.log(info),
-    (
-      <>
-        <ToDoContainer>
-          <InputForm
-            inputTitle={title}
-            inputInfo={info}
-            todos={todos}
-            onChangeInfoInput={onChangeInfoInput}
-            onChangeTitleInput={onChangeTitleInput}
-            onInsert={onInsert}
-            onToggle={onToggle}
-            onRemove={onRemove}
-          />
-        </ToDoContainer>
-      </>
-    )
+    <>
+      <ToDoContainer>
+        <InputForm
+          inputTitle={title}
+          inputInfo={info}
+          todos={todos}
+          onChangeTitleInput={onChangeTitleInput}
+          onChangeInfoInput={onChangeInfoInput}
+          onInsert={onInsert}
+          onToggle={onToggle}
+          onRemove={onRemove}
+          onUpdate={onUpdate}
+        />
+      </ToDoContainer>
+    </>
   );
 }
 

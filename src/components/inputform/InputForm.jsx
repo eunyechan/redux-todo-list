@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const InputFormWrpper = styled.div`
@@ -10,6 +11,7 @@ const InputContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
@@ -17,6 +19,11 @@ const InputContainer = styled.div`
 const InputFormWrapper = styled.form`
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: #f8ebb1d8;
+  border-radius: 10px;
 `;
 
 const InputSpanDiv = styled.div`
@@ -37,51 +44,199 @@ const Input = styled.input`
 `;
 
 const ButtonContainer = styled.div`
-  width: 100%;
   height: 100%;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
+  &:after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    padding: 4px;
+    position: absolute;
+    bottom: -15px;
+    left: -4px;
+    z-index: -1;
+    background-color: #2b1800;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+  }
 `;
 
 const CreateButton = styled.button`
-  width: 120px;
-  height: 90px;
-  border: none;
+  color: white;
+  font-family: Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  text-decoration: none;
+  background-color: #ffa12b;
+  display: block;
+  position: relative;
+  padding: 10px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  &:active {
+    top: 10px;
+    background-color: #f78900;
+    box-shadow: inset 0 1px 0 #ffe5c4, inset 0 -3px 0 #915100;
+  }
 `;
 
 const ToDoItemContainer = styled.div`
-  width: 100%;
+  display: grid;
   height: 100%;
+  max-width: 1200px;
+  min-width: 800px;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  gap: 20px 15px;
+  padding: 20px;
 `;
 
-const ToDoItem = ({ todo, onToggle, onRemove }) => {
+const ToDoItemWrapper = styled.div`
+  border: 3px solid black;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+  overflow: hidden;
+`;
+
+const ToDoItemTitle = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  padding: 20px;
+  font-weight: bold;
+`;
+
+const ToDoItemInfo = styled.span`
+  font-size: 18px;
+  padding: 20px;
+`;
+
+const ToDoItemButtonList = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 10px;
+  padding-right: 10px;
+`;
+
+const ToDoItemDetailButton = styled.button`
+  width: 100px;
+  height: 40px;
+  border-radius: 10px;
+  font-weight: bold;
+  margin: 10px;
+  border: 1px solid black;
+  background-color: transparent;
+  cursor: pointer;
+`;
+const ToDoItemDoneInput = styled.input`
+  cursor: pointer;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: white;
+  border-radius: 10px;
+`;
+const ToDoItemDeleteButton = styled.button`
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  border-radius: 10px;
+  font-size: 24px;
+  border: 1px solid transparent;
+  background-color: white;
+  color: red;
+  cursor: pointer;
+  &:hover {
+    background-color: red;
+    color: white;
+  }
+`;
+
+const ToDoItem = ({
+  todo,
+  onToggle,
+  onRemove,
+  onChangeTitleInput,
+  onChangeInfoInput,
+}) => {
+  const navigate = useNavigate();
+
+  const moveDetail = () => {
+    onChangeTitleInput("");
+    onChangeInfoInput("");
+    navigate(`/detail${todo.id}`, {
+      state: {
+        id: todo.id,
+        title: todo.title,
+        info: todo.info,
+        done: todo.done,
+        // onUpdate,
+      },
+    });
+  };
+
   return (
-    <ToDoItemContainer>
-      <input
-        type={"checkbox"}
-        onClick={() => onToggle(todo.id)}
-        checked={todo.done}
-        readOnly={true}
-      />
-      <span
-        style={{
-          textDecoration: todo.done ? "line-through" : "none",
-          marginRight: "200px",
-        }}
+    <>
+      <ToDoItemWrapper
+        style={{ backgroundColor: todo.done ? "#eeeeee26" : "#f8f1cedf" }}
       >
-        {todo.title}
-      </span>
-      <span>{todo.info}</span>
-      <button onClick={() => onRemove(todo.id)}>삭제</button>
-    </ToDoItemContainer>
+        <ToDoItemDetailButton
+          style={{
+            opacity: todo.done ? "0" : "1",
+            pointerEvents: todo.done ? "none" : "auto",
+          }}
+          onClick={moveDetail}
+        >
+          상세히보기
+        </ToDoItemDetailButton>
+
+        <ToDoItemTitle
+          style={{
+            textDecoration: todo.done ? "line-through" : "none",
+          }}
+        >
+          {todo.title}
+        </ToDoItemTitle>
+        <hr style={{ width: "100%" }} />
+        <ToDoItemInfo
+          style={{
+            textDecoration: todo.done ? "line-through" : "none",
+          }}
+        >
+          {todo.info}
+        </ToDoItemInfo>
+        <ToDoItemButtonList>
+          <ToDoItemDoneInput
+            type={"button"}
+            onClick={() => onToggle(todo.id)}
+            checked={todo.done}
+            readOnly={true}
+            value={todo.done ? "⭕" : "✔"}
+          />
+          <ToDoItemDeleteButton onClick={() => onRemove(todo.id)}>
+            x
+          </ToDoItemDeleteButton>
+        </ToDoItemButtonList>
+      </ToDoItemWrapper>
+    </>
   );
 };
 
 function InputForm({
+  todos,
   inputTitle,
   inputInfo,
-  todos,
   onChangeTitleInput,
   onChangeInfoInput,
   onInsert,
@@ -110,19 +265,45 @@ function InputForm({
           <InputFormWrapper onSubmit={onSubmit}>
             <InputSpanDiv>
               <InputSpan>제목</InputSpan>
-              <Input value={inputTitle} onChange={onChangeTitle} />
+              <Input
+                required
+                maxLength={15}
+                value={inputTitle}
+                onChange={onChangeTitle}
+              />
             </InputSpanDiv>
             <InputSpanDiv>
               <InputSpan>내용</InputSpan>
-              <Input value={inputInfo} onChange={onChangeInfo} />
+              <Input
+                required
+                maxLength={30}
+                value={inputInfo}
+                onChange={onChangeInfo}
+              />
             </InputSpanDiv>
             <ButtonContainer>
               <CreateButton>작성하기</CreateButton>
             </ButtonContainer>
-            <div>
+          </InputFormWrapper>
+          <h1
+            style={{ fontSize: "45px", marginTop: "40px", fontWeight: "bold" }}
+          >
+            -LIST-
+          </h1>
+          <br />
+          <div
+            style={{
+              maxWidth: "1200px",
+              minWidth: "800px",
+            }}
+          >
+            <ToDoItemContainer>
               {todos.map((todo) => {
                 return (
                   <ToDoItem
+                    onChangeInfoInput={onChangeInfoInput}
+                    onChangeTitleInput={onChangeTitleInput}
+                    inputTitle={inputTitle}
                     todo={todo}
                     key={todo.id}
                     onToggle={onToggle}
@@ -130,8 +311,8 @@ function InputForm({
                   />
                 );
               })}
-            </div>
-          </InputFormWrapper>
+            </ToDoItemContainer>
+          </div>
         </InputContainer>
       </InputFormWrpper>
     </>

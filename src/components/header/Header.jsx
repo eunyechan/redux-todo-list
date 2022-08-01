@@ -31,16 +31,10 @@ function Header() {
   return (
     <>
       <HeaderContainer>
-        <HeaderTitle>m</HeaderTitle>
-        <HeaderTitle>y</HeaderTitle>
         <HeaderTitle>t</HeaderTitle>
         <HeaderTitle>o</HeaderTitle>
         <HeaderTitle>d</HeaderTitle>
         <HeaderTitle>o</HeaderTitle>
-        <HeaderTitle>l</HeaderTitle>
-        <HeaderTitle>i</HeaderTitle>
-        <HeaderTitle>s</HeaderTitle>
-        <HeaderTitle>t</HeaderTitle>
       </HeaderContainer>
     </>
   );

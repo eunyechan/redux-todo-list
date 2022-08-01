@@ -4,6 +4,7 @@ const CHANGE_INFO = "inputvalue/CHANGE_INFO";
 const INSERT = "inputvalue/INSERT";
 const TOGGLE = "inputvalue/TOGGLE";
 const REMOVE = "inputvalue/REMOVE";
+const UPDATE = "inputvalue/UPDATE";
 
 export const changeTitleInput = (title) => ({
   type: CHANGE_TITLE,
@@ -15,7 +16,7 @@ export const changeInfoInput = (info) => ({
   info,
 });
 
-let id = 3;
+let id = 1;
 export const insert = (title, info) => ({
   type: INSERT,
   todo: {
@@ -31,6 +32,12 @@ export const toggle = (id) => ({
   id,
 });
 
+export const update = (id, content) => ({
+  type: UPDATE,
+  id,
+  content,
+});
+
 export const remove = (id) => ({
   type: REMOVE,
   id,
@@ -39,20 +46,7 @@ export const remove = (id) => ({
 const initialState = {
   title: "",
   info: "",
-  todos: [
-    {
-      id: 1,
-      title: "리덕스 적응하기",
-      info: "화이팅",
-      done: true,
-    },
-    {
-      id: 2,
-      title: "리덕스 공부",
-      info: "화이팅",
-      done: false,
-    },
-  ],
+  todos: [],
 };
 
 function todos(state = initialState, action) {
@@ -78,6 +72,17 @@ function todos(state = initialState, action) {
       return {
         ...state,
         todos: state.todos.concat(action.todo),
+      };
+    case UPDATE:
+      return {
+        ...state,
+        todos: state.todos.map((data, index) => {
+          if (index === action.id) {
+            return action.content;
+          } else {
+            return data;
+          }
+        }),
       };
     case REMOVE:
       return {
