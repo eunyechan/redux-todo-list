@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -63,24 +62,18 @@ const DetailBtn = styled.button`
   cursor: pointer;
 `;
 
-function Detail({ onUpdate }) {
+function Detail() {
   const location = useLocation();
   const goback = useNavigate();
   const todo = location.state;
 
-  const [newValue, setnewValue] = useState("");
-  const [updateDP, setUpdateDP] = useState("none");
-
-  const handleChange = (e) => {
-    setnewValue(e.target.value);
-  };
   return (
     <>
       <DetailContainer>
         <DetailTopContainer>
           <DetailTopTitle>Detail Page</DetailTopTitle>
         </DetailTopContainer>
-        <DetailWrapper>
+        <DetailWrapper style={{ position: "relative" }}>
           <DetailBtnContainer>
             <DetailBtn onClick={() => goback(-1)}>⇚</DetailBtn>
           </DetailBtnContainer>
@@ -91,6 +84,7 @@ function Detail({ onUpdate }) {
               justifyContent: "center",
               alignItems: "center",
               marginTop: "50px",
+              zIndex: 2,
             }}
           >
             <span style={{ fontSize: "40px", fontWeight: "bold" }}>
@@ -98,32 +92,11 @@ function Detail({ onUpdate }) {
             </span>
           </div>
           <DetailTitleContainer>
-            {/* <span style={{ fontWeight: "bold" }}>제목:</span> */}
             <DetailTitle>{todo.title}</DetailTitle>
           </DetailTitleContainer>
           <DetailTitleContainer>
-            {/* <span style={{ fontWeight: "bold" }}>내용:</span> */}
             <DetailInfo>{todo.info}</DetailInfo>
           </DetailTitleContainer>
-          {/* <button id={todo.id} onClick={() => setUpdateDP("block")}>
-            수정
-          </button>
-          <div style={{ display: updateDP }}>
-            <input
-              value={newValue}
-              placeholder="새로운 값 입력하세요"
-              onChange={handleChange}
-            />
-            <button
-              onClick={() => {
-                todo.onUpdate(todo.id, newValue);
-                setUpdateDP("none");
-                setnewValue("");
-              }}
-            >
-              수정완료
-            </button>
-          </div> */}
         </DetailWrapper>
       </DetailContainer>
     </>

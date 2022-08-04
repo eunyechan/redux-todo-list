@@ -1,4 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useCallback } from "react";
+import {
+  changeTitleInput,
+  insert,
+  toggle,
+  remove,
+  changeInfoInput,
+} from "../../redux/modules/inputvalue";
 import styled from "styled-components";
 
 const InputFormWrpper = styled.div`
@@ -163,10 +172,12 @@ const ToDoItemDeleteButton = styled.button`
   }
 `;
 
+// ToDoItem
 const ToDoItem = ({
   todo,
   onToggle,
   onRemove,
+  onUpdate,
   onChangeTitleInput,
   onChangeInfoInput,
 }) => {
@@ -181,7 +192,6 @@ const ToDoItem = ({
         title: todo.title,
         info: todo.info,
         done: todo.done,
-        // onUpdate,
       },
     });
   };
@@ -189,7 +199,10 @@ const ToDoItem = ({
   return (
     <>
       <ToDoItemWrapper
-        style={{ backgroundColor: todo.done ? "#eeeeee26" : "#f8f1cedf" }}
+        style={{
+          backgroundColor: todo.done ? "#eeeeee26" : "#f8f1cedf",
+          border: todo.done ? "3px solid white" : "3px solid black",
+        }}
       >
         <ToDoItemDetailButton
           style={{
@@ -200,7 +213,6 @@ const ToDoItem = ({
         >
           상세히보기
         </ToDoItemDetailButton>
-
         <ToDoItemTitle
           style={{
             textDecoration: todo.done ? "line-through" : "none",
@@ -233,19 +245,33 @@ const ToDoItem = ({
   );
 };
 
-function InputForm({
-  todos,
-  inputTitle,
-  inputInfo,
-  onChangeTitleInput,
-  onChangeInfoInput,
-  onInsert,
-  onToggle,
-  onRemove,
-}) {
+// InpurForm
+function InputForm() {
+  const { title, info, todos } = useSelector(({ todos }) => ({
+    title: todos.title,
+    info: todos.info,
+    todos: todos.todos,
+  }));
+
+  const dispatch = useDispatch();
+  const onChangeTitleInput = useCallback(
+    (title) => dispatch(changeTitleInput(title)),
+    [dispatch]
+  );
+  const onChangeInfoInput = useCallback(
+    (info) => dispatch(changeInfoInput(info)),
+    [dispatch]
+  );
+  const onInsert = useCallback(
+    (title, info) => dispatch(insert(title, info)),
+    [dispatch]
+  );
+  const onToggle = useCallback((id) => dispatch(toggle(id)), [dispatch]);
+  const onRemove = useCallback((id) => dispatch(remove(id)), [dispatch]);
+
   const onSubmit = (e) => {
     e.preventDefault();
-    onInsert(inputTitle, inputInfo);
+    onInsert(title, info);
     onChangeTitleInput("");
     onChangeInfoInput("");
   };
@@ -268,7 +294,7 @@ function InputForm({
               <Input
                 required
                 maxLength={15}
-                value={inputTitle}
+                value={title}
                 onChange={onChangeTitle}
               />
             </InputSpanDiv>
@@ -277,7 +303,7 @@ function InputForm({
               <Input
                 required
                 maxLength={30}
-                value={inputInfo}
+                value={info}
                 onChange={onChangeInfo}
               />
             </InputSpanDiv>
@@ -303,7 +329,7 @@ function InputForm({
                   <ToDoItem
                     onChangeInfoInput={onChangeInfoInput}
                     onChangeTitleInput={onChangeTitleInput}
-                    inputTitle={inputTitle}
+                    inputTitle={title}
                     todo={todo}
                     key={todo.id}
                     onToggle={onToggle}

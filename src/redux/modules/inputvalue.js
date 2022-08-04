@@ -1,4 +1,4 @@
-// State들의 그룹
+import uuid from "react-uuid";
 const CHANGE_TITLE = "inputvalue/CHANGE_TITLE";
 const CHANGE_INFO = "inputvalue/CHANGE_INFO";
 const INSERT = "inputvalue/INSERT";
@@ -16,11 +16,10 @@ export const changeInfoInput = (info) => ({
   info,
 });
 
-let id = 1;
 export const insert = (title, info) => ({
   type: INSERT,
   todo: {
-    id: id++,
+    id: uuid(),
     title,
     info,
     done: false,
@@ -32,10 +31,10 @@ export const toggle = (id) => ({
   id,
 });
 
-export const update = (id, content) => ({
+export const update = (id, title) => ({
   type: UPDATE,
   id,
-  content,
+  title,
 });
 
 export const remove = (id) => ({
@@ -76,19 +75,16 @@ function todos(state = initialState, action) {
     case UPDATE:
       return {
         ...state,
-        todos: state.todos.map((data, index) => {
-          if (index === action.id) {
-            return action.content;
-          } else {
-            return data;
-          }
-        }),
+        todos: state.todos.map((todo) =>
+          todo.id === action.id ? { ...todo, title: !todo.title } : todo
+        ),
       };
     case REMOVE:
       return {
         ...state,
         todos: state.todos.filter((todo) => todo.id !== action.id),
       };
+
     default:
       return state;
   }
